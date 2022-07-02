@@ -1,0 +1,61 @@
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-v-center {
+    align-items: center;
+}
+
+.full-screen {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+}
+
+.controll-btn {
+    background: transparent;
+    border: 0;
+    color: #969685;
+    padding: 5px 10px;
+    border-radius: 3px;
+    i {
+        margin-right: 5px;
+    }
+    cursor: pointer;
+    &:hover {
+        background-color: #4c4c4c;
+    }
+}
+
+.loading-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba($color: #000000, $alpha: 0.3);
+    display: flex;
+    align-items: center;
+    color: #d4d4d4;
+    justify-content: center;
+    &::after {
+        content: 'loading...';
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}

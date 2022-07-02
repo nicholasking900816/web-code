@@ -1,0 +1,16 @@
+.error-msg-block {
+    position: absolute;
+    left: 0;
+    display: inline;
+    white-space: nowrap;
+    padding: 5px 10px;
+    background-color: #252526;
+    border: 1px solid #454545;
+    color: #87c7cc;
+    &.up-positioin {
+        bottom: 26px;
+    }
+    &.down-position {
+        top: 26px;
+    }
+}
