@@ -53,10 +53,10 @@ export class ControllBar extends React.Component<any, any, any> {
                     <i className='fa-solid fa-save'></i>
                     <span>{this.state.onSaveBtnText}</span>
                 </button>
-                <button className='controll-btn' onClick={this.onPlay.bind(this)}>
+                {/* <button className='controll-btn' onClick={this.onPlay.bind(this)}>
                     <i className='fa-solid fa-play'></i>
                     <span>运行(ctrl+w)</span>
-                </button>
+                </button> */}
                 <button className='controll-btn' onClick={this.onReresh.bind(this)}>
                     <i className='fa-solid fa-refresh'></i>
                     <span>刷新(ctrl+r)</span>
