@@ -7,8 +7,6 @@ export class SideBarControl extends React.Component<any, any, any> {
         super(props);
     }
 
-    
-
     render() {
         return (
             <div className='side-bar-control'>

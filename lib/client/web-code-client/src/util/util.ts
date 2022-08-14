@@ -203,14 +203,14 @@ export class Util {
                     if (node.identifier) {
                         return definition.definitions ? Scope.prototype.matchOwnDefinitions.call(definition, node.text) : null
                     } 
-                    return definition.definitions.map(item => ({
+                    return definition.definitions ? definition.definitions.map(item => ({
                         near: 0,
                         definition : item,
                         index: 0,
                         text: item.identifier,
                         textLeft: '',
                         textRight: ''
-                    }));
+                    })) : [];
                 } else {
                     if (node.identifier) {
                         return definition.definitions ? definition.definitions.find(definition => definition.identifier === node.text) : null
@@ -315,6 +315,7 @@ export class Util {
         let curRightNode = curRightBoundary.prevNode,
             leftRise = () => {
                 Util.boundaryLinkedListUtil.findReversely(curLeftBoundary, (boundary: BoundaryNode) => {
+                    // 碰到头节点则返回头节点
                     if((boundary.nextNode.block?.depth || 0) < (curLeftNode.block?.depth || 0)) {
                         curLeftBoundary = boundary;
                         curLeftNode = boundary.nextNode;
@@ -324,6 +325,7 @@ export class Util {
             },
             rightRise = () => {
                 Util.boundaryLinkedListUtil.find(curRightBoundary, (boundary: BoundaryNode) => {
+                    // 碰到头节点则返回头节点
                     if((boundary.prevNode.block?.depth || 0) < (curRightNode.block?.depth || 0)) {
                         curRightBoundary = boundary;
                         curRightNode = boundary.prevNode;
@@ -331,18 +333,24 @@ export class Util {
                     }
                 })
             }
-        while(curLeftNode.block !== curRightNode.block) {
-            if(curLeftNode.block.depth > curRightNode.block.depth) {
+        while(curLeftNode.id !== curRightNode.id && curLeftNode.block !== curRightNode.block) {
+            // 头节点的block深度为1;
+            let leftDepth = curLeftNode.isHead ? 1 : curLeftNode.block.depth;
+            let rightDepth = curRightNode.isHead ? 1 : curRightNode.block.depth;
+            // 两边都已到最外层block;
+            if (leftDepth === 1 && rightDepth === 1) break;
+            if(leftDepth > rightDepth) {
                 leftRise();
             } else {
                 rightRise()
             }
         }
+        
         return {
-            curLeftNode,
-            curRightNode,
-            curLeftBoundary,
-            curRightBoundary
+            curLeftNode: curLeftNode.isHead ? curLeftNode.nextNode : curLeftNode,
+            curRightNode: curRightNode.isHead ? curRightNode.prevNode : curRightNode,
+            curLeftBoundary: curLeftNode.boundary,
+            curRightBoundary: curRightNode.boundary.nextBoundary
         }
     }
 }

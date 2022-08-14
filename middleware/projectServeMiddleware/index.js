@@ -29,7 +29,6 @@ function setupPlugins(compiler) {
 
     compiler.hooks.thisCompilation.tap('test', (compilation) => {
         compilation.hooks.afterProcessAssets.tap('test', (assets) => {
-            debugger
             const assetKeys = Object.keys(assets);
             const classified = util.classify(assetKeys);
             if (!assetKeys.find(key => suffixReg.exec(key)[1] === 'html')) {

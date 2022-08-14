@@ -7,12 +7,11 @@ import { Scope } from "./Scope";
 
 export class Definition {
     identifier: string;
-    definitions: Array<Definition>;
+    definitions: Array<Definition> = [];
     type = 'Definition';
-    arguments: Array<string>; 
+    arguments: Array<string> = []; 
     
     constructor(public astNode: AstNode, public definitionType: string, public definitionCode: number, public scope: Scope) {
-        if (astNode === undefined) debugger;
         switch(astNode.code) {
             case NodeCode.AssignmentExpression:
                 this.identifier = (<any>astNode).left.identifier;

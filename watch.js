@@ -9,7 +9,6 @@ const option = require.ensure()
 
 compiler.hooks.thisCompilation.tap('test', (compilation) => {
     compilation.hooks.afterProcessAssets.tap('test', (assets) => {
-        debugger;
         const assetKeys = Object.keys(assets);
         if (!assetKeys.find(key => reg.test(key))) {
             let template = fs.readFileSync(path.join(__dirname, 'lib/client/template/index.html')).toString().split('\r\n');
@@ -23,6 +22,3 @@ compiler.hooks.thisCompilation.tap('test', (compilation) => {
 })
 
 const watch = compiler.watch({}, err => console.log(err));
-
-console.log(watch);
-debugger;

@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env env=demo webpack-dev-server",
+    "start-dev": "cross-env env=dev webpack-dev-server",
     "build": "cross-env mode=production webpack-cli",
     "build-demo": "cross-env mode=production env=demo webpack-cli"
   },

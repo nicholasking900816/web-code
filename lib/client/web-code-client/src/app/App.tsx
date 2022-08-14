@@ -1,11 +1,8 @@
 import * as React from 'react';
 import { CodeSnippet } from './CodeSnippet/CodeSnippet';
 
-import axios from 'axios/lib/axios';
 import { MyContext } from '../myContext';
 import { DirectoryComponent } from './DirectoryComponent/DirectoryComponent';
-import { createStore } from 'redux';
-import { mainReducer } from '../reducers/mainReducer';
 import './App.scss';
 import { Subject } from 'rxjs';
 import { Api } from '../api';

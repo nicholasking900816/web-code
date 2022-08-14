@@ -104,7 +104,6 @@ export class JavascriptAstParsser {
       }
       node && topLevelBlock.body.push(node as any)
     }
-    debugger;
     if (analyze) {
       new JavascriptScopeAnalyzer().analyze(this.ast.topLevelBlock);
     }
