@@ -812,7 +812,7 @@ export class CodeRenderer {
             this.consumeTo(this.pos + matchResult.index);
             text = text.slice(matchResult.index);
             if (matchResult[0] === '//') {
-                let commentEndResult = /\r\n/.exec(text);
+                let commentEndResult = /\n/.exec(text);
                 this.consumeTo(commentEndResult ? this.pos + commentEndResult.index : newPos, Color.comment)
             } else if (matchResult[0] === '/*') {
                 let commentEndResult = /\*\//.exec(text);

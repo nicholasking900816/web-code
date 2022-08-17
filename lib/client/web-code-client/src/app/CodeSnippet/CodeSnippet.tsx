@@ -164,7 +164,8 @@ export class CodeSnippet extends React.Component<any, any, any> {
     }
 
     onBackspace(e) {
-        if (this.pointer.node && !(this.pointer.row === 1 && this.pointer.col === 0) && !this.deleteSelection()) {
+        debugger;
+        if (this.pointer.node && !this.deleteSelection() && !(this.pointer.row === 1 && this.pointer.col === 0)) {
             let left = this.pointer.node.left;
             this.mergeEdit = ![1,3].includes(this.mergeEdit) ? 1 : 3;
             if (!left.length) {
@@ -429,8 +430,8 @@ export class CodeSnippet extends React.Component<any, any, any> {
                 //         if (node.id === item.id) replacedNodes[index2] = current[index]
                 //     })
                 // })
-                if (origin[0].id === replaceIfMatch[0].id) replacedNodes[0] = current[0];
-                if (origin[1].id === replaceIfMatch[1].id) replacedNodes[1] = current[1];
+                if (origin[0].id === replaceIfMatch[0]?.id) replacedNodes[0] = current[0];
+                if (origin[1].id === replaceIfMatch[1]?.id) replacedNodes[1] = current[1];
             } else {
                 Util.nodeLinkedListUntil.reInsert(current);
                 if (origin.boundary.nextNode.id === origin.id) origin.boundary.nextNode = current;
@@ -541,12 +542,11 @@ export class CodeSnippet extends React.Component<any, any, any> {
     }
 
     onInput(e: any, isPaste = false) {
-        let text = isPaste ? this.clipboard : e.target.value, vertexs = [];
+        let text = isPaste ? this.clipboard || this.inputBoxRef.current.value : e.target.value, vertexs: any;
         if (!isPaste && this.autoEnwrap(text)) return; 
         this.mergeEdit = Util.breakPoints.includes(text) ? 0 : ![2,1].includes(this.mergeEdit) ? 1 : 2// 第一次不merge
         if (this.hasSelection()) { // 有选中文本时要先删除选中的文本
-            this.doDeleteSelection();
-            vertexs = this.getSelectionVertex('source');
+            vertexs = this.doDeleteSelection();
         } else {
             this.initOperation();
         }
@@ -559,7 +559,7 @@ export class CodeSnippet extends React.Component<any, any, any> {
             origin: this.pointer.node.source
         })
 
-        let textFragments = text.split('\r\n');
+        let textFragments = text.split('\n');
         if (textFragments.length > 1) {
             this.pointer.row += textFragments.length - 1;
             this.pointer.col = textFragments[textFragments.length - 1].length;
@@ -570,8 +570,12 @@ export class CodeSnippet extends React.Component<any, any, any> {
         if (e) {
             e.target.value = '';
         }
-        this.getCodeHints()
-        this.refreshCode(...vertexs);
+        this.getCodeHints();
+        if (vertexs) {
+            this.refreshCode(vertexs.left.source, vertexs.right.source);
+        } else {
+            this.refreshCode();
+        }
     }    
 
     pushOperation() {
@@ -830,6 +834,7 @@ export class CodeSnippet extends React.Component<any, any, any> {
         let renderNodeHead, identifierHead, globalScope = new Scope();
         globalScope.addDefinitions(getGlobalDefinitions(globalScope) as any);
         globalScope.addDefinition(getConsoleDefinition(globalScope));
+        debugger;
         this.ast = new JavascriptAstParsser(code).parse();
         this.ast.topLevelBlock.scope.parent = globalScope;
         this.renderNodeHead = renderNodeHead = new CodeRenderer(code, this.ast).render();
@@ -856,11 +861,11 @@ export class CodeSnippet extends React.Component<any, any, any> {
             return false;
         }
 
-        this.doDeleteSelection();
+        let vertex = this.doDeleteSelection();
         this.updateCharLength();
         this.setState({hideCursor: false});
         this.terminateFlash = this.setCursorFlash();
-        this.refreshCode(...this.getSelectionVertex('source'));
+        this.refreshCode(vertex.left.source, vertex.right.source);
         return true;
     }
 

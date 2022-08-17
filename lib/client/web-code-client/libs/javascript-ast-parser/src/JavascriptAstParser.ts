@@ -1248,7 +1248,7 @@ export class JavascriptAstParsser {
     let node: TemplateLiteralExppression = new TemplateLiteralExppression(this.currentToken);
     let finishParse = this.startParse(node)
     let consumeString = () => {
-      while(this.curCharCode !== 96 && !this.isReadAll() && this.input.slice(this.pos + 1, this.pos + 3) !== '${') {
+      while(this.curCharCode !== 96 && !this.isReadAll() && this.input.slice(this.pos, this.pos + 2) !== '${') {
         this.advance();
       }
     }
@@ -1272,6 +1272,7 @@ export class JavascriptAstParsser {
       node.content.push(str);
       if (this.curCharCode === 96) break;
       let value: AstNode;
+      this.pos += 2;
       if( // 遇到了 '${' 符号
         (value = this.expectExpression()) &&
         this.expectToken('}')
