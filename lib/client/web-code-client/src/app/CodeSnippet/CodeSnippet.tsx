@@ -100,6 +100,7 @@ export class CodeSnippet extends React.Component<any, any, any> {
             this.onArrowDown(e);
         })
         this.keyboardProx.onKeydown('Enter', (e) => {
+            e.preventDefault();
             this.deleteSelection();
             this.onEnter();
         })
@@ -120,8 +121,8 @@ export class CodeSnippet extends React.Component<any, any, any> {
             this.onCopy()
         }, 'ctrlKey')
         this.keyboardProx.onKeydown('v', (e) => {
-            e.preventDefault();
-            this.onPaste()
+            // e.preventDefault();
+            // this.onPaste()
         }, 'ctrlKey')
         this.keyboardProx.onKeydown('x', (e) => {
             e.preventDefault();
@@ -164,7 +165,6 @@ export class CodeSnippet extends React.Component<any, any, any> {
     }
 
     onBackspace(e) {
-        debugger;
         if (this.pointer.node && !this.deleteSelection() && !(this.pointer.row === 1 && this.pointer.col === 0)) {
             let left = this.pointer.node.left;
             this.mergeEdit = ![1,3].includes(this.mergeEdit) ? 1 : 3;
@@ -205,7 +205,9 @@ export class CodeSnippet extends React.Component<any, any, any> {
         }
     }
 
+    // 当有选中代码时
     tryApplyTabIndent() {
+        if (!this.hasSelection()) return false;
         let vertexs = this.getSelectionVertex();
         if (vertexs[0].row !== vertexs[1].row) {
             let isNewRow = true, remainder: number, firstRowHead;
@@ -333,7 +335,10 @@ export class CodeSnippet extends React.Component<any, any, any> {
             this.forceUpdate();
             return;
         }
-        if (this.pointer.node && this.pointer.row !== this.renderNodeHead.row) {
+        
+        debugger;
+        // 光标处于最后一行，不能向下移动
+        if (this.pointer.node && this.pointer.row !== this.renderNodeHead.prevNode.row) {
             this.forceVisible();
             let position = Util.matchPosition(
                 Util.getNextStart(this.pointer.node.source),
@@ -745,7 +750,7 @@ export class CodeSnippet extends React.Component<any, any, any> {
 
         this.insertRenderNodes(renderNodeHead, curLeftNode.prevNode, curRightNode.nextNode);
         
-        if (!newCode && !renderNodeHead.prevNode.lineEnd) { // 因为newCode为null，所以为删除代码操作，此时如果renderNodeHead不是行首的node则为无意义的node 
+        if (!newCode && !renderNodeHead.prevNode.isHead && !renderNodeHead.prevNode.lineEnd) { // 因为newCode为null，所以为删除代码操作，此时如果renderNodeHead不是行首的node则为无意义的node 
              CodeRenderNodeUtil.unlinkNode(renderNodeHead);
         } 
         if (this.headNode.prevNode.lineEnd) {
@@ -834,7 +839,6 @@ export class CodeSnippet extends React.Component<any, any, any> {
         let renderNodeHead, identifierHead, globalScope = new Scope();
         globalScope.addDefinitions(getGlobalDefinitions(globalScope) as any);
         globalScope.addDefinition(getConsoleDefinition(globalScope));
-        debugger;
         this.ast = new JavascriptAstParsser(code).parse();
         this.ast.topLevelBlock.scope.parent = globalScope;
         this.renderNodeHead = renderNodeHead = new CodeRenderer(code, this.ast).render();
@@ -930,6 +934,7 @@ export class CodeSnippet extends React.Component<any, any, any> {
                 this.clipboard = leftText + CodeRenderer.stringify(left.editting.nextNode, right.editting.prevNode) + rightText;
             }
         }
+        navigator.clipboard.writeText(this.clipboard);
     }
 
     onCut() {
@@ -1259,7 +1264,7 @@ export class CodeSnippet extends React.Component<any, any, any> {
     }
 
     getNodeElements() {
-        let curNode = this.headNode, 
+        let curNode = this.headNode.nextNode, 
             headNode = this.headNode,
             spaceMatcher = /[^ ]+/,
             spaceCount = 0,
@@ -1498,7 +1503,7 @@ export class CodeSnippet extends React.Component<any, any, any> {
                     {this.getNodeElements()}
                 </ul>) : ''}  
                 {this.hintInfo.hintItems?.length ? this.renderCodeHints() : ''}
-                <input className="code-input-box" ref={this.inputBoxRef} onInput={this.onInput.bind(this)} type="text" />
+                <textarea className="code-input-box" ref={this.inputBoxRef} onInput={this.onInput.bind(this)}></textarea>
                 {this.pointer ? cursor() : ''}
                 <div className="bg-block1 bg-block" style={this.bgBlock1Style}></div>
                 <div className="bg-block2 bg-block" style={this.bgBlock2Style}></div>

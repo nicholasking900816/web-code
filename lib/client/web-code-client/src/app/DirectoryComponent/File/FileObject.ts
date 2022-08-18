@@ -28,7 +28,7 @@ export class FileObject {
         let curNode = headNode;
         while(curNode) {
             str += curNode.text.replace(/\&nbsp;/g, ' ');
-            if (curNode.lineEnd) str += '\r\n';
+            if (curNode.lineEnd) str += '\n';
             if (curNode.id === tailNode.id) break;
             curNode = curNode.nextNode;
         }
@@ -54,7 +54,7 @@ export class FileObject {
         if (!this.currentNode) this.currentNode = this.headRenderNode;
         while(this.currentNode) {
             this.content += this.currentNode.text.replace(/\&nbsp;/g, ' ');
-            if (this.currentNode.lineEnd) this.content += '\r\n';
+            if (this.currentNode.lineEnd) this.content += '\n';
             this.currentNode = this.currentNode.nextNode;
             if (this.currentNode === this.headRenderNode) {
                 this.finishTrans();

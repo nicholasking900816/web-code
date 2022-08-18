@@ -72,7 +72,7 @@ export class CodeRenderer {
         let curNode = headNode;
         while(curNode) {
             str += curNode.text.replace(/\&nbsp;/g, ' ');
-            if (curNode.lineEnd) str += '\r\n';
+            if (curNode.lineEnd) str += '\n';
             if (curNode.id === tailNode.id) break;
             curNode = curNode.nextNode;
         }
@@ -832,7 +832,7 @@ export class CodeRenderer {
     private consumeTo(newPos: number, color?: string) {
         if (newPos === this.pos) return;
         let text = this.inputCode.slice(this.pos, newPos);
-        let textFragment: string[] = text.split('\r\n');
+        let textFragment: string[] = text.split('\n');
         if (!textFragment.length) return;
         this.pushNode(
             new CodeRenderNode(textFragment.shift(), color ? {color: color} : {}, this.isBeautifyingUnExpect, false, this.unexpectMsg)

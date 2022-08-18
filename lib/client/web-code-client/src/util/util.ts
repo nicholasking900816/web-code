@@ -53,6 +53,7 @@ export class Util {
 
     static getCharSizeFromRowHead(node: CodeRenderNode) {
         let rowHeadNode: CodeRenderNode = Util.getLineStart(node), size = 0;
+        if (rowHeadNode.id === node.id) return 0;
         Util.nodeLinkedListUntil.forEach(rowHeadNode, (curNode: CodeRenderNode) => {
             size += Util.measureSizeOfText(curNode.text); 
         }, node.prevNode);
@@ -108,7 +109,7 @@ export class Util {
                 }
                    
             }
-            if (curNode.lineEnd) break;
+            if (curNode.lineEnd || curNode.nextNode.isHead) break;
             curNode = curNode.nextNode;
         } while(curNode !== headNode);
         return {
